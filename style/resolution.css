@@ -1,0 +1,27 @@
+/*
+	B2G always returns with 'min-resolution' 96dpi instead of real dpi (equal to Macbook Pro 13' dpi's)
+	B2G always returns with 'min--moz-device-pixel-ratio' 1 instead of real pixel ratio.
+	We are not using any media query because of applications internal iframes size will not match the device query
+*/
+
+
+/*
+	WVGA => QHD
+	Supported devices:
+		- 480x800:?;
+*/
+@media all and (min-device-width: 480px) {
+	html { font-size: 15px!important; }
+}
+
+
+/*
+	QHD => DVGA
+	Supported devices:
+		- Geeksphone Peak: 540×960:?;
+*/
+@media all and (min-device-width: 540px) {
+	html { font-size: 16.8px!important; }
+}
+
+

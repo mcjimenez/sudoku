@@ -1,0 +1,171 @@
+div.tablero{
+	height:70%;
+	width: 100%;
+/*	border: 3px solid;*/
+}
+div.opciones{
+	width: 100%;
+	height:20%;
+}
+
+
+table.tablero1
+{
+	border-collapse:collapse;
+  padding:0px;
+	border: 5px solid #7e674e;
+	height:100%;
+	width:100%;
+}
+td.tablero1{
+  padding:0px;
+}
+table.tablero2
+{
+	border-collapse:collapse;
+	height:100%;
+	width:100%;
+}
+
+table.opciones2
+{
+	border-collapse:collapse;
+	height:100%;
+	width:100%;
+	text-align: center;
+}
+
+
+table.opciones2.actions button {
+	font: bold 1.1rem/1em "MozTT", Sans-serif;
+	text-transform: uppercase;
+	width: auto;
+	height: 3.3rem;
+}
+
+table.opciones2.actions #opnb {
+	background: #C7E892;
+	color: #3F561C;
+}
+
+table.opciones2.actions #opcp, #opca {
+	background: #94c9ea;
+	color: #122e40;
+	border-right: solid 1px #fff;
+}
+
+
+table.opciones1
+{
+	border-collapse:collapse;
+  padding:0px;
+	border: 3px solid #7e674e;
+	height:100%;
+	width:100%;
+}
+
+td.opciones1{
+  padding:0px;
+}
+
+td.tablero
+{
+  padding:0px;
+  margin:0px;
+}
+
+table.elto
+{
+	border-collapse:collapse;
+	height:100%;
+	width:100%;
+	padding:0px;
+}
+td /*.elto*/
+{
+	border: 3px solid #7e674e;
+  padding:0px;
+  margin:0px;
+  text-align: center;
+  vertical-align: middle;
+  font: 1.5rem/1em "MozTT", Sans-serif;
+}
+
+td.eltoOpc
+{
+	border: 0;
+  padding:0px;
+  margin:0px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.center2
+{
+text-align: center;
+}
+
+.center1
+{
+margin-left: auto;
+margin-right: auto;
+}
+
+.btoOpc{
+	background-color: #e7e7e7;
+	border:0;
+	color: #0000ff;
+	/*-moz-focus-inner{border:0;}*/
+	outline: 0 none;
+}
+
+.tablero td input, .opciones1 td input {
+	/*width: 3rem;*/
+	width: 100%;
+	height: 2.0rem;
+	padding: 0;
+	border: none;
+	text-align: center;
+	font: 1.5rem/1em "MozTT", Sans-serif;	
+}
+.btoEmp{
+	background: #e7e7e7;
+	color: #e7e7e7;
+	/*border:4;*/
+}
+.btoEmpSel{
+	background: #b9b9b9;
+	color: #b9b9b9;
+	/*border:0;*/
+}
+
+.btoFix{
+	background: #e7e7e7;
+	color: #0000ff;
+	/*border:0;*/
+}
+
+.btoFixSel{
+	background: #b9b9b9;
+	/*border:0;*/
+	color: #0000ff;
+}
+
+.btoErr{
+	background: #e7e7e7;
+	color: #FF0000;
+}
+.btoErrSel{
+	background: #b9b9b9;
+	color: #ff0000;
+}
+
+.btoStf{
+	background: #e7e7e7;
+	color: #555555;
+}
+.btoStfSel{
+	background: #b9b9b9;
+	color: #333333;
+}
+

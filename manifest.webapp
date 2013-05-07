@@ -1,0 +1,13 @@
+{
+  "name": "Sudoku",
+  "description": "Sudoku Game",
+  "launch_path": "/index.html", 
+  "icons": {
+    "128": "/style/icons/sudoku.png"
+  },
+  "developer": {
+    "url": "https://github.com/", 
+    "name": "Carmen Jimenez"
+  },
+  "version":"0.0.01"
+}
