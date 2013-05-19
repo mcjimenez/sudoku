@@ -13,7 +13,7 @@
 </head>
 <body role="application">
 
-  <section id="sudoku-menu" role="region">
+  <section id="sudoku-menu" role="region" class="hide">
     <header>
       <h1>Demo Sudoku Game</h1>
     </header>
@@ -233,6 +233,22 @@
   	</tr>
 		</table>
 	</div>
+    </article>
+  </section>
+  <section id="sudoku-start" role="region">
+    <header>
+      <!--button id="cancel-f"><span class="icon icon-close">close</span></button-->
+      <h1>Sudoku</h1>
+    </header>
+    <article>
+      <div class="banner">
+        <p>Select difficulty level</p>
+        <p><button type="button" id="levelFlash" class="eltoOpc btoOpc" data-type="ficha" name="cleanPos">Flash</button></p>
+	<p><button type="button" id="levelEasy" class="eltoOpc btoOpc" data-type="ficha" name="cleanAll">Easy</button></p>
+        <p><button type="button" id="levelMedium" class="eltoOpc btoOpc" data-type="ficha" name="newBoard">Medium</button></p>
+        <p><button type="button" id="levelHard" class="eltoOpc btoOpc" data-type="ficha" name="newBoard">Hard</button></p>
+        <p><button type="button" id="levelExpert" class="eltoOpc btoOpc" data-type="ficha" name="newBoard">Expert</button></p>
+      </div>
     </article>
   </section>
   <section id="sudoku-finish" role="region" class="hide">
