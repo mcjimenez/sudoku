@@ -1,6 +1,6 @@
 var sudoku = (function() {
-
     'use strict';
+
     var TOTAL_SQUARE = 81,
         MAX_POS_FIL = 8,
         MAX_POS_COL = 8;
@@ -10,7 +10,9 @@ var sudoku = (function() {
         BTO_EMP = "btoEmp",
         BTO_EMP_SEL = "btoEmpSel",
         BTO_STF_SEL = "btoStfSel",
-        BTO_ERR_SEL = "btoErrSel";
+        BTO_STF = "btoStf",
+        BTO_ERR_SEL = "btoErrSel",
+        BTO_ERR = "btoErr";
     
     var TXT_BTO_CLEAN_POSITION = "Clean position",
         TXT_BTO_CLN_ALL = "Clean all",
@@ -121,6 +123,52 @@ var sudoku = (function() {
 	}
     };
 
+    function verifyCasilla(casilla, fil, col, board) {
+	//Si la casilla era erronea ahora puede ser correcta
+	var typeValue = casilla.attributes.getNamedItem("class").value;
+	if (typeValue.substr(0,6) === BTO_ERR) {
+	    if (isValOk(board[fil][col], board, fil, col)) {
+		if (typeValue.length > 6) {
+		    casilla.attributes.getNamedItem("class").value = BTO_STF;
+		} else {
+		    casilla.attributes.getNamedItem("class").value = BTO_STF_SEL;
+		}
+		numPieceOk = numPieceOk + 1;
+	    }
+	}	 
+    }
+
+    function verifyOthersSquere(board, fil, col) {
+
+	//Verificar que en fila global y columna global algun valor se vuelva correcto
+	for (var i = 0; i < 9; i++) {
+	    //Comprobar fila y columna de todo el tablero
+	    if (col !== i){
+		var casilla = document.getElementById("" + fil + i);
+		verifyCasilla(casilla, fil, i, board);
+	    }
+	    if (fil !== i){
+		var casilla = document.getElementById("" + i + col);
+		verifyCasilla(casilla, i, col, board);
+	    }
+	}
+        //Verificar subtablero 
+   	var fBigBoard = Math.floor(fil / 3);
+	var fSmallBoard = fil % 3;
+	var cBigBoard = Math.floor(col / 3);
+	var cSmallBoard = col % 3;
+	for (var fa = 0; fa < 3; fa++) {
+	    for (var ca = 0; ca < 3; ca++) {
+		if (fa !== fSmallBoard && ca !== cSmallBoard){
+		    var fa_abs = fBigBoard * 3 + fa;
+		    var ca_abs = cBigBoard * 3 + ca;
+		    var casilla = document.getElementById("" + fa_abs + ca_abs);
+		    verifyCasilla(casilla, fa_abs, ca_abs, board);
+		}
+	    }
+	}
+    }
+
     var setValue = function (newVal) {
 	
 	if (square == null) {
@@ -136,11 +184,11 @@ var sudoku = (function() {
 		//this.square.value = 0;
 		square.attributes.getNamedItem("class").value = BTO_EMP_SEL;
 		newVal = 0;	  		
-		//if (this.isValOk(this.square.value)){
 		if (isValOk(square.textContent)) {
 		    numPieceOk = numPieceOk - 1;
 		}
 	    } else {
+                //Revisar ficha puesta
 		if (isValOk(newVal)) {
 		    square.attributes.getNamedItem("class").value = BTO_STF_SEL;
 		    if (!isValOk(square.textContent)) {
@@ -153,9 +201,11 @@ var sudoku = (function() {
 		    }
 		}	  			  		
 		square.textContent = newVal;
+                //Revisar si afecta al resto del tablero
 	    }	  		  	
 	    var indFicha= square.attributes.getNamedItem("name").value;
-	    board[indFicha.substr(0,1)][indFicha.substr(1,1)] = newVal;
+	    board[indFicha.substr(0,1)][indFicha.substr(1,1)] = parseInt(newVal);
+	    verifyOthersSquere(board, parseInt(square.attributes.getNamedItem("name").value.substr(0,1)), parseInt(square.attributes.getNamedItem("name").value.substr(1,1)));
 	    break;
 	}
 	changeSelectElto(square, false);
@@ -187,7 +237,7 @@ var sudoku = (function() {
 	    var cSmallBoard = c % 3;
 	    for (var fa = 0; ok && fa < 3; fa++) {
 		for (var ca = 0; ok && ca < 3; ca++) {
-		    if (fa != fSmallBoard && ca != cSmallBoard){
+		    if (fa !== fSmallBoard && ca !== cSmallBoard){
 			ok = dealBoard[fBigBoard*3 + fa][cBigBoard * 3 + ca] != newVal;
 		    }
 		}
@@ -370,27 +420,25 @@ function mostrarTablero(level){
 window.addEventListener('load', function sudokuLoad(evt) {
   //window.removeEventListener('load', calcLoad);
     var bto = document.getElementById("levelFlash");
-    bto.addEventListener('click',function levelFlash(evt){
+    bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_FLASH);
     });
     bto = document.getElementById("levelEasy");
-    bto.addEventListener('click',function levelFlash(evt){
+    bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_EASY);
     });
     bto = document.getElementById("levelMedium");
-    bto.addEventListener('click',function levelFlash(evt){
+    bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_MEDIUM);
     });
     bto = document.getElementById("levelHard");
-    bto.addEventListener('click',function levelFlash(evt){
+    bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_HARD);
     });
     bto = document.getElementById("levelExpert");
-    bto.addEventListener('click',function levelFlash(evt){
+    bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_EXPERT);
     });
-    //sudoku.setLevel(sudoku.LEVEL_MEDIUM);
-    //sudoku.init();
 });
 
 
