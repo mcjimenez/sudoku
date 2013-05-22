@@ -22,7 +22,7 @@ var sudoku = (function() {
         BTO_NEW_BOA = "newBoard",
         BTO_CLEAN_POSITION = "cleanPos";
 
-    var LEVEL_FLASH = 48,
+    var LEVEL_FLASH = 70, //LEVEL_FLASH = 48,
         LEVEL_EASY = 38,
         LEVEL_MEDIUM = 30,
         LEVEL_HARD = 27,
@@ -129,9 +129,9 @@ var sudoku = (function() {
 	if (typeValue.substr(0,6) === BTO_ERR) {
 	    if (isValOk(board[fil][col], board, fil, col)) {
 		if (typeValue.length > 6) {
-		    casilla.attributes.getNamedItem("class").value = BTO_STF;
-		} else {
 		    casilla.attributes.getNamedItem("class").value = BTO_STF_SEL;
+		} else {
+		    casilla.attributes.getNamedItem("class").value = BTO_STF;
 		}
 		numPieceOk = numPieceOk + 1;
 	    }
@@ -438,6 +438,18 @@ window.addEventListener('load', function sudokuLoad(evt) {
     bto = document.getElementById("levelExpert");
     bto.addEventListener('click',function (evt){
 	mostrarTablero(sudoku.LEVEL_EXPERT);
+    });
+    bto = document.getElementById("cancel-finish");
+    bto.addEventListener('click', function onClick(evt) {
+        window.close();
+    });
+    bto = document.getElementById("close-start");
+    bto.addEventListener('click', function onClick(evt) {
+        window.close();
+    });
+    bto = document.getElementById("close-menu");
+    bto.addEventListener('click', function onClick(evt) {
+        window.close();
     });
 });
 
