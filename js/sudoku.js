@@ -290,41 +290,39 @@ var sudoku = (function() {
 
         var exito, 
             newXY; 
-        var searchOneSolution = solutions === undefined;       
  
         if (board[posX][posY]) {
             if (posX === MAX_POS_FIL && posY === MAX_POS_COL) {
-                if (!searchOneSolution) {
-                    solutions.numSol = (solutions.numSol === undefined? 1: solutions.numSol + 1);
-                }
+                solutions.numSol = solutions.numSol + 1;
+                solutions.sols.push(board);
                 exito = true;
             } else {
                 newXY = newPosition(posX, posY);
                 exito = solve(board, newXY[0], newXY[1], solutions);
             }
         } else {
+            var auxBoard = cloneBoard(board);
             var opciones = dameOpciones(),
                 opcAct = -1;
             exito = false;
+
             do {
                 opcAct++;
-                if (isValOk(opciones[opcAct], board, posX, posY)) {
-                    board[posX][posY] = opciones[opcAct];
+                if (isValOk(opciones[opcAct], auxBoard, posX, posY)) {
+                    auxBoard[posX][posY] = opciones[opcAct];
                     if (posX === MAX_POS_FIL && posY === MAX_POS_COL) {
-                        if (!searchOneSolution) {
-                            solutions.numSol = (solutions.numSol === undefined? 1: solutions.numSol + 1);
-                        }
+                        solutions.numSol = solutions.numSol + 1;
+                        solutions.sols.push(board);
                         exito = true;
                     } else {
                         newXY = newPosition(posX, posY);
-                        exito = solve(board, newXY[0], newXY[1], solutions);
+                        exito = solve(auxBoard, newXY[0], newXY[1], solutions);
                         if (!exito) {
-                            board[posX][posY] = 0;
+                            auxBoard[posX][posY] = 0;
                         }
                     }
                 }
-            } while (((searchOneSolution && !exito) || (!searchOneSolution && solutions.numSol < solutions.maxNumSol)) &&
-                    opcAct <  opciones.length - 1);
+            } while (solutions.numSol < solutions.maxNumSol && opcAct <  opciones.length - 1);
         }
         return exito;
     }
@@ -338,8 +336,9 @@ var sudoku = (function() {
                 tablero[i][j] = 0;
             }
         }
-        solve(tablero, 0, 0);
-        tablero = removeSquaresToLevel(tablero);
+        var solutions = {numSol: 0, maxNumSol: 1, sols:[]};
+        solve(tablero, 0, 0, solutions);
+        tablero = removeSquaresToLevel(solutions.sols[0]);
         paintBoard(tablero);
     }
 
@@ -355,10 +354,10 @@ var sudoku = (function() {
 
     function hasUniqueSolution(board) {
 
-        var solutions = {numSol: 0, maxNumSol: 2};
+        var solutions = {numSol: 0, maxNumSol: 2, sols:[]};
         var auxBoard = cloneBoard(board);
         solve(auxBoard, 0, 0, solutions);
-        return solutions.numSol > 1;
+        return solutions.numSol === 1;
     }
 
     function cloneBoard(board) {
@@ -380,10 +379,9 @@ var sudoku = (function() {
             oldValFC,
             oldValCF;
 
-        var remove = TOTAL_SQUARE - getLevel();
-
         do {
             var tableroNew = cloneBoard(tablero);
+            var remove = TOTAL_SQUARE - getLevel();
             while (remove > 0) {
                 fila = Math.floor(Math.random()* 9);
                 col = Math.floor(Math.random()* 9);
