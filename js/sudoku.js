@@ -22,13 +22,11 @@ var sudoku = (function() {
         BTO_NEW_BOA = "newBoard",
         BTO_CLEAN_POSITION = "cleanPos";
 
-    var LEVEL_FLASH = 70, //LEVEL_FLASH = 48,
-        LEVEL_EASY = 38,
-        LEVEL_MEDIUM = 30,
-        LEVEL_HARD = 27,
-        LEVEL_EXPERT = 24;
-
-    var LEVELS = [LEVEL_FLASH, LEVEL_EASY, LEVEL_MEDIUM, LEVEL_HARD, LEVEL_EXPERT];
+    var LEVEL_FLASH = 70, //48,
+        LEVEL_EASY = 60, //38,
+        LEVEL_MEDIUM = 50, //30,
+        LEVEL_HARD = 40,
+        LEVEL_EXPERT = 33;
 
     var square = null;
     var board = null;
@@ -77,7 +75,9 @@ var sudoku = (function() {
                     //Generar nº aleatorio
                     var nEltos = 0;
                     for (var key in datas) {
-                        if (datas.hasOwnProperty(key))nEltos++;
+                        if (datas.hasOwnProperty(key)){
+                            nEltos++;
+                        }
                     }
                     var rInf = 1;
                     var ran = Math.floor(Math.random()*(nEltos - rInf)) + parseInt(rInf);
@@ -87,7 +87,7 @@ var sudoku = (function() {
                 }
             }
         }				
-        xhr.open('GET', 'datas/boards.json',false); //syn
+        xhr.open('GET', 'datas/boards.json', false); //syn
         xhr.responsType = 'text';
         xhr.send(null);
         return initBoard;
@@ -95,7 +95,7 @@ var sudoku = (function() {
 
     var changeSelect =  function (newCeld) {
 
-        changeSelectElto(square,false);
+        changeSelectElto(square, false);
         changeSelectElto(newCeld, true);
         square = newCeld;
     };
@@ -112,50 +112,61 @@ var sudoku = (function() {
         var clsNewValF;
         var clsNewValC;
         for (var i = 0; i < 9; i++) {
-            clsValF = document.getElementById(f + i.toString()).attributes.getNamedItem("class").value;
-            clsValC = document.getElementById(i.toString() + c).attributes.getNamedItem("class").value;
+            //clsValF = document.getElementById(f + i.toString()).attributes.getNamedItem("class").value;
+            //clsValC = document.getElementById(i.toString() + c).attributes.getNamedItem("class").value;
+            clsValF = document.getElementById(f + i.toString()).attributes.getNamedItem("class");
+            clsValC = document.getElementById(i.toString() + c).attributes.getNamedItem("class");
             if (sel) {
-                clsNewValF = clsValF.substr(0,6) + "Sel";
-                clsNewValC = clsValC.substr(0,6) + "Sel";
+                //clsNewValF = clsValF.substr(0,6) + "Sel";
+                //clsNewValC = clsValC.substr(0,6) + "Sel";
+                clsNewValF = clsValF.value.substr(0,6) + "Sel";
+                clsNewValC = clsValC.value.substr(0,6) + "Sel";
             } else {
-                clsNewValF = clsValF.substr(0,6);
-                clsNewValC = clsValC.substr(0,6);
+                //clsNewValF = clsValF.substr(0,6);
+                //clsNewValC = clsValC.substr(0,6);
+                clsNewValF = clsValF.value.substr(0,6);
+                clsNewValC = clsValC.value.substr(0,6);
             }
-            document.getElementById(f + i.toString()).attributes.getNamedItem("class").value = clsNewValF;
-            document.getElementById(i.toString() + c).attributes.getNamedItem("class").value = clsNewValC;
+            //document.getElementById(f + i.toString()).attributes.getNamedItem("class").value = clsNewValF;
+            //document.getElementById(i.toString() + c).attributes.getNamedItem("class").value = clsNewValC;
+            clsValF.value = clsNewValF;
+            clsValC.value = clsNewValC;
+            clsValC = null;
+            clsValF = null;
         }
     };
 
-    function verifyCasilla(casilla, fil, col, board) {
-        //Si la casilla era erronea ahora puede ser correcta
-        var typeValue = casilla.attributes.getNamedItem("class").value;
-        if (typeValue.substr(0,6) === BTO_ERR) {
+    function verifySquare(casilla, fil, col, board) {
+
+        //if square was wrong, it can be right now
+        var typeValue = casilla.attributes.getNamedItem("class");
+        if (typeValue.value.substr(0,6) === BTO_ERR) {
             if (isValOk(board[fil][col], board, fil, col)) {
-                if (typeValue.length > 6) {
-                    casilla.attributes.getNamedItem("class").value = BTO_STF_SEL;
+                if (typeValue.value.length > 6) {
+                    typeValue.value = BTO_STF_SEL;
                 } else {
-                    casilla.attributes.getNamedItem("class").value = BTO_STF;
+                    typeValue.value = BTO_STF; 
                 }
                 numPieceOk = numPieceOk + 1;
             }
         }	 
+        typeValue = null;
     }
 
-    function verifyOthersSquere(board, fil, col) {
+    function verifyOthersSquare(board, fil, col) {
 
-        //Verificar que en fila global y columna global algun valor se vuelva correcto
+        var casilla;
         for (var i = 0; i < 9; i++) {
-            //Comprobar fila y columna de todo el tablero
             if (col !== i) {
-                var casilla = document.getElementById("" + fil + i);
-                verifyCasilla(casilla, fil, i, board);
+                casilla = document.getElementById("" + fil + i);
+                verifySquare(casilla, fil, i, board);
             }
             if (fil !== i) {
-                var casilla = document.getElementById("" + i + col);
-                verifyCasilla(casilla, i, col, board);
+                casilla = document.getElementById("" + i + col);
+                verifySquare(casilla, i, col, board);
             }
         }
-        //Verificar subtablero 
+        casilla = null;
         var fBigBoard = Math.floor(fil / 3);
         var fSmallBoard = fil % 3;
         var cBigBoard = Math.floor(col / 3);
@@ -165,8 +176,8 @@ var sudoku = (function() {
                 if (fa !== fSmallBoard && ca !== cSmallBoard) {
                     var fa_abs = fBigBoard * 3 + fa;
                     var ca_abs = cBigBoard * 3 + ca;
-                    var casilla = document.getElementById("" + fa_abs + ca_abs);
-                    verifyCasilla(casilla, fa_abs, ca_abs, board);
+                    casilla = document.getElementById("" + fa_abs + ca_abs);
+                    verifySquare(casilla, fa_abs, ca_abs, board);
                 }
             }
         }
@@ -190,35 +201,35 @@ var sudoku = (function() {
         if (square == null) {
             return;
         }
-        var clsVal = square.attributes.getNamedItem("class").value;
-        switch (clsVal) {
+        var cls = square.attributes.getNamedItem("class");
+        switch (cls.value) {
         case BTO_FIX_SEL:
             break;
         default:
-            var tipo = square.attributes.getNamedItem("class");
             if (newVal == TXT_BTO_CLEAN_POSITION) {
                 square.textContent = 0;
-                countPieceOk(tipo.value, false);
-                tipo.value = BTO_EMP_SEL;
+                countPieceOk(cls.value, false);
+                cls.value = BTO_EMP_SEL;
                 newVal = 0;	  				
             } else {
-                //Revisar ficha puesta
                 if (isValOk(newVal)) {
-                    countPieceOk(tipo.value, true);
-                    tipo.value = BTO_STF_SEL;
+                    countPieceOk(cls.value, true);
+                    cls.value = BTO_STF_SEL;
                 } else {
-                    countPieceOk(tipo.value, false);
-                    tipo.value = BTO_ERR_SEL;
+                    countPieceOk(cls.value, false);
+                    cls.value = BTO_ERR_SEL;
                 }	  			  		
                 square.textContent = newVal;
-            }	  		  	
-            var indFicha= square.attributes.getNamedItem("name").value;
+            }	  	
+            cls = null;	  	
+            var indFicha = square.attributes.getNamedItem("name").value;
             board[indFicha.substr(0,1)][indFicha.substr(1,1)] = parseInt(newVal);
-            verifyOthersSquere(board, parseInt(indFicha.substr(0,1)), parseInt(indFicha.substr(1,1)));
+            verifyOthersSquare(board, parseInt(indFicha.substr(0,1)), parseInt(indFicha.substr(1,1)));
             break;
         }
         changeSelectElto(square, false);
         square = null;
+        indFicha = null;
     };
 
     var isValOk = function(newVal, b, fil, col) {
@@ -260,9 +271,9 @@ var sudoku = (function() {
         document.getElementById(BTO_CLEAN_POSITION).childNodes[0].nodeValue = TXT_BTO_CLEAN_POSITION;
         document.getElementById(BTO_CLN_ALL).childNodes[0].nodeValue = TXT_BTO_CLN_ALL;
         document.getElementById(BTO_NEW_BOA).childNodes[0].nodeValue = TXT_BTO_NEW_BOA;
-    }
+    };
 
-    function dameOpciones() {
+    function getOptions() {
 
         var opciones = [];
         var esta = [false, false, false, false, false, false, false, false, false];
@@ -274,7 +285,7 @@ var sudoku = (function() {
             }
         }
         return opciones;
-    }
+    };
 
     function newPosition(posX, posY) {
 
@@ -284,9 +295,9 @@ var sudoku = (function() {
             newXY[1] = newXY[1] + 1;
         }
         return newXY;
-    }
+    };
 
-    function solve(board, posX, posY, solutions) {
+    function solve(board, posX, posY, solutions, ite) {
 
         var exito, 
             newXY; 
@@ -294,35 +305,45 @@ var sudoku = (function() {
         if (board[posX][posY]) {
             if (posX === MAX_POS_FIL && posY === MAX_POS_COL) {
                 solutions.numSol = solutions.numSol + 1;
-                solutions.sols.push(board);
+                if (solutions.sols === null){
+                    solutions.sols = board;
+                }
                 exito = true;
             } else {
                 newXY = newPosition(posX, posY);
-                exito = solve(board, newXY[0], newXY[1], solutions);
+                exito = solve(board, newXY[0], newXY[1], solutions, ite +1);
             }
         } else {
             var auxBoard = cloneBoard(board);
-            var opciones = dameOpciones(),
+            var opciones = getOptions(),
                 opcAct = -1;
             exito = false;
-
+            try{
             do {
                 opcAct++;
                 if (isValOk(opciones[opcAct], auxBoard, posX, posY)) {
                     auxBoard[posX][posY] = opciones[opcAct];
                     if (posX === MAX_POS_FIL && posY === MAX_POS_COL) {
+                        board[posX][posY] = opciones[opcAct];
                         solutions.numSol = solutions.numSol + 1;
-                        solutions.sols.push(board);
+                        if (solutions.sols === null){
+                            solutions.sols = board;
+                        }
                         exito = true;
                     } else {
                         newXY = newPosition(posX, posY);
-                        exito = solve(auxBoard, newXY[0], newXY[1], solutions);
+                        exito = solve(auxBoard, newXY[0], newXY[1], solutions, ite +1);
                         if (!exito) {
                             auxBoard[posX][posY] = 0;
                         }
                     }
                 }
             } while (solutions.numSol < solutions.maxNumSol && opcAct <  opciones.length - 1);
+            } catch (e) {
+                 console.log(e);
+            }
+            auxBoard = null;
+            opciones = null;
         }
         return exito;
     }
@@ -336,29 +357,34 @@ var sudoku = (function() {
                 tablero[i][j] = 0;
             }
         }
-        var solutions = {numSol: 0, maxNumSol: 1, sols:[]};
-        solve(tablero, 0, 0, solutions);
-        tablero = removeSquaresToLevel(solutions.sols[0]);
+        var solutions = {numSol: 0, maxNumSol: 1, sols: null};
+        solve(tablero, 0, 0, solutions, 0);
+        tablero = removeSquaresToLevel(solutions.sols);
         paintBoard(tablero);
-    }
+        solutions = null;
+    };
 
     function setLevel(l) {
 
         level = l || LEVEL_MEDIUM;
-    }
+    };
 
     function getLevel() {
 
         return level || LEVEL_MEDIUM;
-    }
+    };
 
     function hasUniqueSolution(board) {
 
-        var solutions = {numSol: 0, maxNumSol: 2, sols:[]};
+        var solutions = {numSol: 0, maxNumSol: 2, sols:null};
         var auxBoard = cloneBoard(board);
-        solve(auxBoard, 0, 0, solutions);
-        return solutions.numSol === 1;
-    }
+	var unique = false;
+        solve(auxBoard, 0, 0, solutions, 0);
+        unique = solutions.numSol === 1;
+        auxBoard = null;
+        solutions = null;
+        return unique;
+    };
 
     function cloneBoard(board) {
 
@@ -370,32 +396,29 @@ var sudoku = (function() {
             }
         }
         return newBoard;
-    }
+    };
 
     function removeSquaresToLevel(tablero) {
 
         var fila,
             col,
-            oldValFC,
-            oldValCF;
-
+	    tableroNew,
+            remove;
         do {
-            var tableroNew = cloneBoard(tablero);
-            var remove = TOTAL_SQUARE - getLevel();
+            tableroNew = cloneBoard(tablero);
+            remove = TOTAL_SQUARE - getLevel();
             while (remove > 0) {
                 fila = Math.floor(Math.random()* 9);
                 col = Math.floor(Math.random()* 9);
                 if (tableroNew[fila][col] !== 0) {
-                    oldValFC = tableroNew[fila][col];
-                    tableroNew[fila][col] = 0;
+                     tableroNew[fila][col] = 0;
                     remove--;
                 }
                 if (tableroNew[col][fila] !== 0) {
-                    oldValCF = tableroNew[col][fila];
-                    tableroNew[col][fila] = 0;
+                     tableroNew[col][fila] = 0;
                     remove--;
                 }
-            }
+            }            
         } while (!hasUniqueSolution(tableroNew));
         return tableroNew;
     }
@@ -435,6 +458,7 @@ var sudoku = (function() {
             createBoard();
             document.removeEventListener('click', this);
             document.addEventListener('click', this);
+            console.log("CJC --> init FUERA");
         },		
 
         setLevel: setLevel,
@@ -470,7 +494,7 @@ var sudoku = (function() {
     }	
 })();
 
-function mostrarTablero(level) {
+function showBoard(level) {
 
     var seccion = document.getElementById('sudoku-start');
     seccion.setAttribute("class", "hide");
@@ -483,27 +507,23 @@ function mostrarTablero(level) {
 function addEvent(id, callback) {
 
     var bto = document.getElementById(id);
-    if (arguments.length > 2){
-        var params = [].slice.call(arguments);
-        params.shift();
-        params.shift();
-        bto.addEventListener('click', function (evt) {
-            callback.apply(undefined, params);
-        });
-    } else {
-        callback();
-    }   
+    var params = [].slice.call(arguments);
+    params.shift();
+    params.shift();
+    bto.addEventListener('click', function (evt) {
+        callback.apply(undefined, params);
+    });
 }
 
 window.addEventListener('load', function sudokuLoad(evt) {
 
     //window.removeEventListener('load', calcLoad);
     for (var lev in sudoku.LEVELS) {
-        addEvent(lev, mostrarTablero, sudoku.LEVELS[lev]);
+        addEvent(lev, showBoard, sudoku.LEVELS[lev]);
     }
-    addEvent('cancel-finish', window.close);
-    addEvent('cancel-start', window.close);
-    addEvent('cancel-menu', window.close);
+    addEvent('close-finish', window.close);
+    addEvent('close-menu', window.close);
+    addEvent('close-start', window.close);
 });
 
 
