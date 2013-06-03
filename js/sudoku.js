@@ -22,23 +22,17 @@ var sudoku = (function() {
         BTO_NEW_BOA = "newBoard",
         BTO_CLEAN_POSITION = "cleanPos";
 
-    var LEVEL_FLASH = 70, //48,
-        LEVEL_EASY = 60, //38,
-        LEVEL_MEDIUM = 50, //30,
-        LEVEL_HARD = 40,
-        LEVEL_EXPERT = 33;
+    var LEVEL_FLASH = 48,
+        LEVEL_EASY = 38, 
+        LEVEL_MEDIUM = 34, //30,
+        LEVEL_HARD = 30,
+        LEVEL_EXPERT = 24;
 
     var square = null;
     var board = null;
     var numPieceOk = 0;
     var initVal = null;
     var level;
-
-    var createBoardFromFile = function() {
-
-        initVal = getNewBoard();
-        resetBoard();
-    };
 
     var resetBoard = function () {
 
@@ -64,7 +58,11 @@ var sudoku = (function() {
         }
     }
 
-    var getNewBoard = function() {
+    var getNewBoard = function(level) {
+
+        var HARD = 4;
+        var EXPERT = 5;
+        var arrBoards = [];
 
         var initBoard = null;
         var xhr = new XMLHttpRequest();
@@ -76,12 +74,16 @@ var sudoku = (function() {
                     var nEltos = 0;
                     for (var key in datas) {
                         if (datas.hasOwnProperty(key)){
-                            nEltos++;
+                          var levelData = Math.floor(key/1000);
+                          if ((levelData === HARD && level === LEVEL_HARD) ||
+                              (levelData === EXPERT && level === LEVEL_EXPERT)) {
+                            arrBoards[nEltos++] = datas[key];                            
+                          }
                         }
                     }
-                    var rInf = 1;
+                    var rInf = 0;
                     var ran = Math.floor(Math.random()*(nEltos - rInf)) + parseInt(rInf);
-                    initBoard = datas[ran.toString()];
+                    initBoard = arrBoards[ran];
                 } else {
                     console.error('Error getting sudoku board.');
                 }
@@ -112,23 +114,15 @@ var sudoku = (function() {
         var clsNewValF;
         var clsNewValC;
         for (var i = 0; i < 9; i++) {
-            //clsValF = document.getElementById(f + i.toString()).attributes.getNamedItem("class").value;
-            //clsValC = document.getElementById(i.toString() + c).attributes.getNamedItem("class").value;
             clsValF = document.getElementById(f + i.toString()).attributes.getNamedItem("class");
             clsValC = document.getElementById(i.toString() + c).attributes.getNamedItem("class");
             if (sel) {
-                //clsNewValF = clsValF.substr(0,6) + "Sel";
-                //clsNewValC = clsValC.substr(0,6) + "Sel";
                 clsNewValF = clsValF.value.substr(0,6) + "Sel";
                 clsNewValC = clsValC.value.substr(0,6) + "Sel";
             } else {
-                //clsNewValF = clsValF.substr(0,6);
-                //clsNewValC = clsValC.substr(0,6);
                 clsNewValF = clsValF.value.substr(0,6);
                 clsNewValC = clsValC.value.substr(0,6);
             }
-            //document.getElementById(f + i.toString()).attributes.getNamedItem("class").value = clsNewValF;
-            //document.getElementById(i.toString() + c).attributes.getNamedItem("class").value = clsNewValC;
             clsValF.value = clsNewValF;
             clsValC.value = clsNewValC;
             clsValC = null;
@@ -348,7 +342,24 @@ var sudoku = (function() {
         return exito;
     }
 
-    function createBoard(level) {
+    function createBoard(pl){
+
+      var l = pl || level;
+
+      if (l === LEVEL_MEDIUM || l === LEVEL_EASY || l === LEVEL_FLASH ) {
+        createBoardRamdon(l);
+      } else {
+        createBoardFromFile(l);
+      }
+    }
+
+    var createBoardFromFile = function(level) {
+
+        initVal = getNewBoard(level);
+        resetBoard();
+    };
+
+    function createBoardRamdon(level) {
 
         var tablero =  new Array(MAX_POS_FIL + 1);
         for (var i = 0; i < MAX_POS_FIL + 1; i++) {
@@ -458,7 +469,6 @@ var sudoku = (function() {
             createBoard();
             document.removeEventListener('click', this);
             document.addEventListener('click', this);
-            console.log("CJC --> init FUERA");
         },		
 
         setLevel: setLevel,

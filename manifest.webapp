@@ -9,5 +9,6 @@
     "url": "https://github.com/mcjimenez/sudoku", 
     "name": "Carmen Jimenez"
   },
+  "orientation": "portrait-primary",
   "version":"0.0.01"
 }
