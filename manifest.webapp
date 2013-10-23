@@ -1,14 +1,14 @@
 {
-  "name": "Sudoku",
-  "description": "Sudoku Game",
-  "launch_path": "/index.html", 
-  "icons": {
-    "128": "/style/icons/sudoku.png"
+  'name': 'Sudoku',
+  'description': 'Sudoku Game',
+  'launch_path': '/index.html',
+  'icons': {
+    '128': '/style/icons/sudoku.png'
   },
-  "developer": {
-    "url": "https://github.com/mcjimenez/sudoku", 
-    "name": "Carmen Jimenez"
+  'developer': {
+    'url': 'https://github.com/mcjimenez/sudoku',
+    'name': 'Carmen Jimenez'
   },
-  "orientation": "portrait-primary",
-  "version":"0.0.01"
+  'orientation': 'portrait-primary',
+  'version': '2.2.0'
 }
